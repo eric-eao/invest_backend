@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: investments_db
+    restart: always
+    environment:
+      POSTGRES_USER: investments_user
+      POSTGRES_PASSWORD: investments_pass
+      POSTGRES_DB: investments_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - investments_net
+
+networks:
+  investments_net:
+
+volumes:
+  pgdata:
