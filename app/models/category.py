@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, Float, Boolean, Enum, DateTime
+from sqlalchemy import Column, String, Float, Boolean, Enum, DateTime, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.database import Base
@@ -23,6 +23,7 @@ class Category(Base):
         # evita duas categorias chamadas "Tesouro" no mesmo módulo
         # mas permite "Tesouro" no bonds e no private_credit por exemplo
         # UNIQUE(name, module)
+        UniqueConstraint("name", "module", name="uix_category_name_module"),
         {"sqlite_autoincrement": True},
     )
 

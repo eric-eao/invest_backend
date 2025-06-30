@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, Field
 from typing import Optional
 from uuid import UUID
@@ -24,8 +25,8 @@ class CategoryUpdate(BaseModel):
 
 class CategoryOut(CategoryBase):
     id: UUID
-    created_at: Optional[str]
-    updated_at: Optional[str]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
     class Config:
         from_attributes = True

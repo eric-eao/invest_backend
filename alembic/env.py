@@ -58,11 +58,22 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    # permite rodar alembic -x db_name=investments_db_test
+    db_name = context.get_x_argument(as_dictionary=True).get("db_name")
+
+    if db_name:
+        url = f"postgresql://investments_user:investments_pass@localhost:5432/{db_name}"
+        connectable = engine_from_config(
+            {**config.get_section(config.config_ini_section), "sqlalchemy.url": url},
+            prefix="sqlalchemy.",
+            poolclass=pool.NullPool,
+        )
+    else:
+        connectable = engine_from_config(
+            config.get_section(config.config_ini_section, {}),
+            prefix="sqlalchemy.",
+            poolclass=pool.NullPool,
+        )
 
     with connectable.connect() as connection:
         context.configure(

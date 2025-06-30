@@ -156,6 +156,30 @@
 
 ---
 
+## Banco de Dados
+
+- Reinicializado o volume Docker (`pgdata`) para garantir ambiente limpo.
+- Reset completo do banco `investcontrol`, recriado sem tabelas herdadas.
+- Alembic reiniciado (pasta `versions` limpa) e gerado novo revision base para a tabela `categories`.
+- Migrations aplicadas do zero, ambiente migrado sem inconsistências.
+
+---
+
+## Alembic
+
+- Configurado para PostgreSQL
+- Realizado primeiro revision de `categories` sem conflitos anteriores
+- Confirmado `alembic upgrade head` executado sem erros
+
+---
+
+## Handlers e Rotas
+
+- Handlers de categoria (`create`, `update`, `delete`, `list`) completos
+- Rotas FastAPI de categoria integradas e testadas localmente
+
+---
+
 ## 📎 Observações Finais
 
 - Documentação deve ser mantida sempre atualizada conforme mudanças de modelo de dados.  

@@ -26,7 +26,7 @@ def get_category(category_id: UUID, db: Session = Depends(get_db)):
     return category_handler.get_category(db, category_id)
 
 
-@router.put("/{category_id}", response_model=CategoryOut)
+@router.patch("/{category_id}", response_model=CategoryOut)
 def update_category(category_id: UUID, updates: CategoryUpdate, db: Session = Depends(get_db)):
     return category_handler.update_category(db, category_id, updates)
 

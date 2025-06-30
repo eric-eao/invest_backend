@@ -11,11 +11,11 @@
 - Primeira migration gerada e aplicada com sucesso para a tabela `categories`
 - Banco de dados limpo e revisado, sem tabelas residuais
 - Conexão validada manualmente com `psql`
+- Criação dos handlers para operações de categoria (`create`, `update`, `delete`, `list`)
+- Rotas completas de category (`routes/categories.py`)
 
 ---
 
 ## 🔮 Próximas Implementações
-- Criação dos handlers para operações de categoria (`create`, `update`, `delete`, `list`)
-- Rotas completas de category (`routes/categories.py`)
 - Primeiros testes unitários básicos para a categoria
 - Documentação OpenAPI dos endpoints de categoria
