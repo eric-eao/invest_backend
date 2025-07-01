@@ -11,7 +11,10 @@ def list_categories(db: Session):
 
 
 def create_category(db: Session, category_in: CategoryCreate):
-    db_category = Category(**category_in.dict())
+    db_category = Category(
+        **category_in.dict(), 
+        module="private_credit"
+    )
     db.add(db_category)
     try:
         db.commit()

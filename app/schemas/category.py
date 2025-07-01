@@ -10,7 +10,6 @@ class CategoryBase(BaseModel):
     allocation_planned: float = Field(..., ge=0, le=100)
     currency: CurrencyEnum
     active: Optional[bool] = True
-    module: str = Field(..., max_length=50)
 
 class CategoryCreate(CategoryBase):
     pass
@@ -19,9 +18,8 @@ class CategoryUpdate(BaseModel):
     name: Optional[str] = Field(None, max_length=100)
     description: Optional[str] = Field(None, max_length=255)
     allocation_planned: Optional[float] = Field(None, ge=0, le=100)
-    currency: Optional[CurrencyEnum]
-    active: Optional[bool]
-    module: Optional[str] = Field(None, max_length=50)
+    currency: Optional[CurrencyEnum] = None
+    active: Optional[bool] = None
 
 class CategoryOut(CategoryBase):
     id: UUID

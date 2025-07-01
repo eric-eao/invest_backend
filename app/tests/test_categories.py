@@ -61,7 +61,7 @@ def test_update_category_success(client):
         "module": "private_credit"
     }
     update_response = client.patch(f"/categories/{category_id}", json=updates)
-    print(update_response.json())
+    # print(update_response.json())
     assert update_response.status_code == 200
     data = update_response.json()
     assert data["name"] == "Atualizada"

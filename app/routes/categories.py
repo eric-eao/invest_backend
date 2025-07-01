@@ -5,7 +5,7 @@ from uuid import UUID
 
 from app.schemas.category import CategoryCreate, CategoryUpdate, CategoryOut
 from app.core.db.session import get_db
-from app.core.categories.handlers import category_handler
+from app.core.modules.private_credit.categories.handlers import category_handler
 
 
 router = APIRouter(tags=["categories"])
