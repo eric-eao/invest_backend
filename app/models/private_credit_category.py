@@ -6,7 +6,7 @@ from app.database import Base
 from app.models.enums import CurrencyEnum
 
 class Category(Base):
-    __tablename__ = "categories"
+    __tablename__ = "private_credit_categories"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     name = Column(String(100), nullable=False)

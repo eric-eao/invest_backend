@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from uuid import UUID
 from app.core.db.session import get_db
-from app.core.modules.control.benchmarks.handlers import benchmark_handler
-from app.schemas import ControlBenchmarkCreate, ControlBenchmarkUpdate, ControlBenchmarkOut
+from app.core.modules.control.handlers import benchmark_handler
+from app.schemas.control_benchmark import ControlBenchmarkCreate, ControlBenchmarkUpdate, ControlBenchmarkOut
 
 router = APIRouter(tags=["Admin - Benchmarks"])
 

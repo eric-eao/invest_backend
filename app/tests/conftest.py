@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.main import app
 from app.database import Base
-from app.routes import categories
+from app.routes.private_credit import categories
 
 # banco de teste
 SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://investments_user:investments_pass@localhost:5432/investments_db_test"
@@ -33,7 +33,7 @@ def db_session(db_engine):
     transaction = connection.begin()
     session = TestingSessionLocal(bind=connection)
 
-    session.execute(text("TRUNCATE TABLE categories RESTART IDENTITY CASCADE;"))
+    session.execute(text("TRUNCATE TABLE private_credit_categories RESTART IDENTITY CASCADE;"))
     session.commit()
 
     yield session

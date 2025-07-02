@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 from fastapi import HTTPException
 from app.models.control_benchmark import ControlBenchmark
-from app.schemas import ControlBenchmarkCreate, ControlBenchmarkUpdate
+from app.schemas.control_benchmark import ControlBenchmarkCreate, ControlBenchmarkUpdate
 
 def list_benchmarks(db: Session):
     return db.query(ControlBenchmark).all()

@@ -3,12 +3,12 @@ from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
 
-from app.schemas.category import CategoryCreate, CategoryUpdate, CategoryOut
 from app.core.db.session import get_db
+from app.schemas.private_credit_category import CategoryCreate, CategoryUpdate, CategoryOut
 from app.core.modules.private_credit.categories.handlers import category_handler
 
 
-router = APIRouter(tags=["categories"])
+router = APIRouter(tags=["Private-credit-categories"])
 
 
 @router.get("/", response_model=List[CategoryOut])

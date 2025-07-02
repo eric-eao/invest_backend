@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from app.schemas.category import CategoryCreate, CategoryUpdate
-from app.models.category import Category
+from app.schemas.private_credit_category import CategoryCreate, CategoryUpdate
+from app.models.private_credit_category import Category
 from fastapi import HTTPException
 from uuid import UUID
 

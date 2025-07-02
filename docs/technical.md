@@ -104,6 +104,27 @@
 
 ---
 
+### private_credit_assets
+
+| Campo           | Tipo      | Descrição                                                                    |
+|-----------------|-----------|-------------------------------------------------------------------------------|
+| id              | UUID      | identificador único                                                          |
+| description     | string    | descrição completa do ativo                                                  |
+| code            | string    | código do ativo (ex: ISIN ou interno)                                        |
+| institution     | string    | instituição emissora                                                         |
+| category_id     | UUID      | vínculo à tabela `private_credit_categories`                                 |
+| maturity_date   | date      | data de vencimento                                                           |
+| rate_type       | string    | tipo de rentabilidade (ex: PREFIXADO ou POS-FIXADO)                          |
+| indexer         | string    | indexador (ex: CDI, IPCA)                                                    |
+| fixed_rate      | float     | taxa fixa anual (%), se aplicável                                            |
+| spread          | float     | spread sobre o indexador, se aplicável                                       |
+| index_percent   | float     | percentual do indexador, se aplicável                                        |
+| active          | boolean   | ativo ou inativo                                                             |
+| created_at      | timestamp | data/hora de criação                                                         |
+| updated_at      | timestamp | data/hora de atualização                                                     |
+
+---
+
 ## ⚙️ Backend Stack
 
 - **FastAPI**: framework principal
@@ -191,7 +212,17 @@
 
 ---
 
+> **Validações**
+>
+> - rate_type = PREFIXADO → **obrigatório**: `fixed_rate`  
+> - rate_type = POS-FIXADO:  
+>   - `indexer` obrigatório  
+>   - se indexer = IPCA → **spread obrigatório**  
+>   - se indexer = CDI → **index_percent** ou **spread** obrigatório  
+> - Validações centralizadas no arquivo `app/core/private_credit/validators/asset_rules.py`
+
+---
+
 > **IMPORTANTE**  
 > Qualquer dúvida futura sobre padrões, rotas ou regras, este documento é a *fonte de verdade*.  
 > Todas as decisões devem seguir o que está aqui, salvo mudança **explícita** em alinhamento futuro.
-

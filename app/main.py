@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 
-from app.routes import categories
+from app.routes.private_credit import categories
+from app.routes.private_credit import assets
 from app.routes.admin import benchmarks
+from app.routes.admin import modules
+from app.routes.admin import portfolio_dates
 
 app = FastAPI(
     title="Invest Control",
@@ -9,5 +12,8 @@ app = FastAPI(
     version="0.1.0",
 )
 
-app.include_router(categories.router, prefix="/categories")
+app.include_router(categories.router, prefix="/private-credit/categories")
+app.include_router(assets.router, prefix="/private-credit/assets")
 app.include_router(benchmarks.router, prefix="/admin/benchmarks")
+app.include_router(modules.router, prefix="/admin/modules")
+app.include_router(portfolio_dates.router, prefix="/admin/portfolio-dates")
