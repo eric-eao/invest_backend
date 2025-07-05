@@ -4,7 +4,8 @@ from app.routes.private_credit import categories
 from app.routes.private_credit import assets
 from app.routes.admin import benchmarks
 from app.routes.admin import modules
-from app.routes.admin import portfolio_dates
+
+from app.routes import movements
 
 app = FastAPI(
     title="Invest Control",
@@ -16,4 +17,4 @@ app.include_router(categories.router, prefix="/private-credit/categories")
 app.include_router(assets.router, prefix="/private-credit/assets")
 app.include_router(benchmarks.router, prefix="/admin/benchmarks")
 app.include_router(modules.router, prefix="/admin/modules")
-app.include_router(portfolio_dates.router, prefix="/admin/portfolio-dates")
+app.include_router(movements.router, prefix="/movements")

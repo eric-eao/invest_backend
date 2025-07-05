@@ -8,7 +8,7 @@ from app.schemas.private_credit_category import CategoryCreate, CategoryUpdate, 
 from app.core.modules.private_credit.categories.handlers import category_handler
 
 
-router = APIRouter(tags=["Private-credit-categories"])
+router = APIRouter(tags=["private_credit_categories"])
 
 
 @router.get("/", response_model=List[CategoryOut])

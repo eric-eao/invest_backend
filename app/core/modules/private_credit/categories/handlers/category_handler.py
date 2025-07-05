@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from app.schemas.private_credit_category import CategoryCreate, CategoryUpdate
-from app.models.private_credit_category import Category
+from app.models.private_credit.private_credit_category import Category
 from fastapi import HTTPException
 from uuid import UUID
 
@@ -11,10 +11,7 @@ def list_categories(db: Session):
 
 
 def create_category(db: Session, category_in: CategoryCreate):
-    db_category = Category(
-        **category_in.dict(), 
-        module="private_credit"
-    )
+    db_category = Category(**category_in.dict())
     db.add(db_category)
     try:
         db.commit()

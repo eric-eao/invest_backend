@@ -49,3 +49,41 @@
 - Avaliar expandir a resposta do asset para incluir dados da categoria aninhada
 - Planejar a modelagem e implementação do módulo de movimentações/positions de ativos
 - Estruturar logs/auditoria para rastrear alterações nos ativos (quem alterou, quando, e qual campo)
+
+
+Sempre que houver alteração, ele atualiza no private_credit_assets os campos:
+
+average_unit_price
+
+total_quantity
+
+total_cost
+
+ou seja, mantendo o ativo sincronizado com as movimentações.
+
+📌 Fluxo sugerido
+✅ 1. Ao inserir um movimento:
+
+se APORTE:
+
+soma a quantidade
+#
+recalcula preço médio
+
+recalcula custo total
+
+se RESGATE:
+
+subtrai a quantidade
+
+mantém preço médio
+
+recalcula custo total
+
+✅ 2. Ao atualizar um movimento:
+
+reprocessa o preço médio e o custo total a partir de todos os movimentos do ativo (é mais seguro para não gerar erro acumulado)
+
+✅ 3. Ao excluir um movimento:
+
+idem, reprocessa tudo do zero para aquele ativo
