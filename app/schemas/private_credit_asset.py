@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from uuid import UUID
 from typing import Optional
 from datetime import datetime, date
-from app.schemas.movement import MovementCreate
+from app.schemas.movement import PrivateCreditInitialMovementCreate
 
 class PrivateCreditAssetBase(BaseModel):
     description: str
@@ -18,7 +18,7 @@ class PrivateCreditAssetBase(BaseModel):
     active: bool = True
 
 class PrivateCreditAssetCreate(PrivateCreditAssetBase):
-    initial_movement: Optional[MovementCreate] = None
+    initial_movement: Optional[PrivateCreditInitialMovementCreate] = None
 
 class PrivateCreditAssetUpdate(BaseModel):
     description: Optional[str] = None

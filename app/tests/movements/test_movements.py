@@ -44,7 +44,7 @@ def test_create_movement_syncs_portfolio_dates(client, db_session):
     mov_payload = {
         "asset_id": asset_id,
         "module_id": module_id,
-        "movement_type": "APORTE",
+        "movement_type": "DEPOSIT",
         "quantity": 100,
         "unit_price": 1,
         "movement_date": "2024-07-01",
@@ -59,11 +59,11 @@ def test_create_movement_syncs_portfolio_dates(client, db_session):
     assert mov_resp.status_code == 201
 
     result = db_session.execute(
-        text("SELECT first_investiment FROM control_portfolio_dates WHERE module_id = :module_id"),
+        text("SELECT first_investment FROM control_portfolio_dates WHERE module_id = :module_id"),
         {"module_id": module_id}
     ).fetchone()
     assert result is not None
-    assert str(result.first_investiment) == "2024-07-01"
+    assert str(result.first_investment) == "2024-07-01"
 
 
 def test_update_movement_syncs_portfolio_dates(client, db_session):
@@ -110,7 +110,7 @@ def test_update_movement_syncs_portfolio_dates(client, db_session):
     mov_payload = {
         "asset_id": asset_id,
         "module_id": module_id,
-        "movement_type": "APORTE",
+        "movement_type": "DEPOSIT",
         "quantity": 100,
         "unit_price": 1,
         "movement_date": "2024-07-01",
@@ -132,11 +132,11 @@ def test_update_movement_syncs_portfolio_dates(client, db_session):
     assert upd_resp.status_code == 200
 
     result = db_session.execute(
-        text("SELECT last_investiment FROM control_portfolio_dates WHERE module_id = :module_id"),
+        text("SELECT last_investment FROM control_portfolio_dates WHERE module_id = :module_id"),
         {"module_id": module_id}
     ).fetchone()
     assert result is not None
-    assert result.last_investiment is not None
+    assert result.last_investment is not None
 
 
 def test_delete_movement_syncs_portfolio_dates(client, db_session):
@@ -183,7 +183,7 @@ def test_delete_movement_syncs_portfolio_dates(client, db_session):
     mov_payload = {
         "asset_id": asset_id,
         "module_id": module_id,
-        "movement_type": "APORTE",
+        "movement_type": "DEPOSIT",
         "quantity": 100,
         "unit_price": 1,
         "movement_date": "2024-07-01",
@@ -202,7 +202,7 @@ def test_delete_movement_syncs_portfolio_dates(client, db_session):
     assert del_resp.status_code == 204
 
     result = db_session.execute(
-        text("SELECT last_investiment FROM control_portfolio_dates WHERE module_id = :module_id"),
+        text("SELECT last_investment FROM control_portfolio_dates WHERE module_id = :module_id"),
         {"module_id": module_id}
     ).fetchone()
-    assert result.last_investiment is None
+    assert result.last_investment is None

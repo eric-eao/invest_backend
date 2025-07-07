@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 from app.core.db.session import get_db
 from app.core.modules.control.handlers import benchmark_handler
+from app.core.modules.snapshot.handlers.snapshot_reset_handler import snapshot_reset_handler
 from app.schemas.control_benchmark import ControlBenchmarkCreate, ControlBenchmarkUpdate, ControlBenchmarkOut
 
 router = APIRouter(tags=["admin_benchmarks"])
@@ -27,3 +28,7 @@ def update_benchmark(benchmark_id: UUID, updates: ControlBenchmarkUpdate, db: Se
 def delete_benchmark(benchmark_id: UUID, db: Session = Depends(get_db)):
     benchmark_handler.delete_benchmark(db, benchmark_id)
     return Response(status_code=204)
+
+@router.post("/{benchmark_id}/reset")
+def reset_benchmark_snapshots(benchmark_id: UUID, db: Session = Depends(get_db)):
+    return snapshot_reset_handler(db, benchmark_id)

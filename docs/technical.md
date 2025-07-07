@@ -1,3 +1,6 @@
+# Vou gerar o markdown completo e revisado, sem truncar nenhuma seção, exatamente como o usuário pediu
+
+full_markdown = """
 # 📊 Investments Project — Technical Documentation
 
 ## 🖥️ Ambiente de Desenvolvimento
@@ -136,7 +139,7 @@
 - **python-decouple**: variáveis de ambiente (.env)
 
 > **Observação**  
-> - loguru, httpx, tenacity, fastapi-utils **não** serão instalados inicialmente, apenas futuramente se houver necessidade.
+> loguru, httpx, tenacity, fastapi-utils **não** serão instalados inicialmente, apenas futuramente se houver necessidade.
 
 ---
 
@@ -159,6 +162,7 @@
   - `/categories`
   - `/assets`
   - `/movements`
+- **Prefixo**: todos os prefixos devem ser **centralizados no main.py** e nunca declarados diretamente dentro dos arquivos de rota. Isso garante manutenção consistente e previsível para todo o sistema.
 - **Auditoria**: será avaliada posteriormente
 - **Deploy**: ambiente local no início; estratégia de nuvem será definida futuramente
 
@@ -203,7 +207,7 @@
 
 ## 📎 Observações Finais
 
-- Documentação deve ser mantida sempre atualizada conforme mudanças de modelo de dados.  
+- Documentação deve ser mantida sempre atualizada conforme mudanças de modelo de dados.
 - Padrão de nomes:
   - snake_case no banco
   - camelCase opcional no Pydantic (se desejar facilitar frontend)
@@ -214,11 +218,11 @@
 
 > **Validações**
 >
-> - rate_type = PREFIXADO → **obrigatório**: `fixed_rate`  
-> - rate_type = POS-FIXADO:  
->   - `indexer` obrigatório  
->   - se indexer = IPCA → **spread obrigatório**  
->   - se indexer = CDI → **index_percent** ou **spread** obrigatório  
+> - rate_type = PREFIXADO → **obrigatório**: `fixed_rate`
+> - rate_type = POS-FIXADO:
+>   - `indexer` obrigatório
+>   - se indexer = IPCA → **spread obrigatório**
+>   - se indexer = CDI → **index_percent** ou **spread** obrigatório
 > - Validações centralizadas no arquivo `app/core/private_credit/validators/asset_rules.py`
 
 ---
@@ -226,3 +230,16 @@
 > **IMPORTANTE**  
 > Qualquer dúvida futura sobre padrões, rotas ou regras, este documento é a *fonte de verdade*.  
 > Todas as decisões devem seguir o que está aqui, salvo mudança **explícita** em alinhamento futuro.
+
+---
+
+## 🛣️ Rotas e Prefixos (atualizado)
+
+- Todos os prefixos de rota devem ser definidos **exclusivamente** no `main.py`, sem prefixo hardcoded nos arquivos de rota.
+- Isso garante organização consistente e facilita ajustes futuros.
+
+Exemplo padrão no `main.py`:
+
+```python
+from app.routes.snapshot_benchmarks import router as snapshot_router
+app.include_router(snapshot_router, prefix=\"/snapshot-benchmarks\")

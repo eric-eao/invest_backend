@@ -1,13 +1,13 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from uuid import UUID
 from datetime import date, datetime
 from typing import Optional
 from enum import Enum
 
 class MovementType(str, Enum):
-    APORTE = "APORTE"
-    RESGATE_TOTAL = "RESGATE_TOTAL"
-    RESGATE_PARCIAL = "RESGATE_PARCIAL"
+    DEPOSIT = "DEPOSIT"                   # aporte
+    FULL_REDEMPTION = "FULL_REDEMPTION"   # resgate total
+    PARTIAL_REDEMPTION = "PARTIAL_REDEMPTION"  # resgate parcial
 
 class MovementStatus(str, Enum):
     PENDING = "PENDING"
@@ -49,4 +49,15 @@ class MovementOut(MovementBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class PrivateCreditInitialMovementCreate(BaseModel):
+    movement_type: str
+    quantity: float
+    unit_price: float
+    movement_date: date
+    settlement_date: date
+    broker: Optional[str] = None
+    transaction_reference: Optional[str] = None
+    notes: Optional[str] = None
+    source: Optional[str] = None

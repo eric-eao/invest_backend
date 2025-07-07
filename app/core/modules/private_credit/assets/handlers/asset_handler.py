@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
-from app.core.modules.movements.handlers import movement_handler
+from app.core.modules.movements.services import create_initial_movement_asset_service
 from app.core.modules.private_credit.assets.validators.asset_validator import asset_validator
 from app.models.private_credit.private_credit_asset import PrivateCreditAsset
 from app.schemas.private_credit_asset import PrivateCreditAssetCreate, PrivateCreditAssetUpdate
@@ -10,11 +10,13 @@ from app.schemas.private_credit_asset import PrivateCreditAssetCreate, PrivateCr
 def list_assets(db: Session):
     return db.query(PrivateCreditAsset).all()
 
+
 def get_asset(db: Session, asset_id: UUID):
     item = db.query(PrivateCreditAsset).filter(PrivateCreditAsset.id == asset_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Ativo não encontrado")
     return item
+
 
 def create_asset(db: Session, asset_in: PrivateCreditAssetCreate):
     # prevenir duplicidade
@@ -54,7 +56,7 @@ def create_asset(db: Session, asset_in: PrivateCreditAssetCreate):
 
     # movimento inicial
     if asset_in.initial_movement:
-        result = movement_handler.create_initial_movement_for_asset(
+        result = create_initial_movement_asset_service.create_initial_movement_asset(
             db=db,
             movement_in=asset_in.initial_movement,
             asset_id=db_asset.id
@@ -66,6 +68,7 @@ def create_asset(db: Session, asset_in: PrivateCreditAssetCreate):
         db.refresh(db_asset)
 
     return db_asset
+
 
 def update_asset(db: Session, asset_id: UUID, updates: PrivateCreditAssetUpdate):
     print(">>>> DEBUG HANDLER UPDATE INICIOU")
@@ -101,9 +104,12 @@ def update_asset(db: Session, asset_id: UUID, updates: PrivateCreditAssetUpdate)
     db.refresh(item)
     return item
 
+
 def delete_asset(db: Session, asset_id: UUID):
     item = db.query(PrivateCreditAsset).filter(PrivateCreditAsset.id == asset_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Ativo não encontrado")
     db.delete(item)
     db.commit()
+
+

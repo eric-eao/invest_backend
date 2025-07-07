@@ -50,8 +50,8 @@ def sync_portfolio_dates(db: Session, module_id: UUID):
         Movement.module_id == module_id
     ).scalar()
 
-    control.first_investiment = first_date
-    control.last_investiment = last_date
+    control.first_investment = first_date
+    control.last_investment = last_date
     control.updated_at = func.now()
 
     db.commit()

@@ -7,16 +7,16 @@ from app.schemas.control_module import ControlModuleOut
 
 class ControlPortfolioDateBase(BaseModel):
     module_id: UUID
-    first_investiment: Optional[date] = None
-    last_investiment: Optional[date] = None
+    first_investment: Optional[date] = None
+    last_investment: Optional[date] = None
     active: bool = True
 
 class ControlPortfolioDateCreate(ControlPortfolioDateBase):
     pass
 
 class ControlPortfolioDateUpdate(BaseModel):
-    first_investiment: Optional[date] = None
-    last_investiment: Optional[date] = None
+    first_investment: Optional[date] = None
+    last_investment: Optional[date] = None
     active: Optional[bool] = None
 
 class ControlPortfolioDateOut(ControlPortfolioDateBase):

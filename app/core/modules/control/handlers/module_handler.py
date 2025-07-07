@@ -27,8 +27,8 @@ def create_module(db: Session, module_in: ControlModuleCreate):
     # cria automaticamente o controle de portfolio_dates
     db_portfolio = ControlPortfolioDate(
         module_id=db_module.id,
-        first_investiment=None,
-        last_investiment=None,
+        first_investment=None,
+        last_investment=None,
         active=True,
         updated_at=func.now()
     )

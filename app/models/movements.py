@@ -3,17 +3,7 @@ from sqlalchemy import Column, String, Date, DECIMAL, Enum, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.database import Base
-import enum
-
-class MovementType(str, enum.Enum):
-    APORTE = "APORTE"
-    RESGATE_TOTAL = "RESGATE_TOTAL"
-    RESGATE_PARCIAL = "RESGATE_PARCIAL"
-
-class MovementStatus(str, enum.Enum):
-    PENDING = "PENDING"
-    CONFIRMED = "CONFIRMED"
-    CANCELLED = "CANCELLED"
+from app.schemas.movement import MovementStatus, MovementType
 
 class Movement(Base):
     __tablename__ = "movements"

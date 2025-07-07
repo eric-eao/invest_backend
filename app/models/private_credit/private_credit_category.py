@@ -4,6 +4,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.database import Base
 from app.models.enums import CurrencyEnum
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
 class Category(Base):
     __tablename__ = "private_credit_categories"
@@ -14,16 +16,15 @@ class Category(Base):
     allocation_planned = Column(Float, nullable=False)
     currency = Column(Enum(CurrencyEnum, name="currency_enum"), nullable=False, default=CurrencyEnum.BRL)
     active = Column(Boolean, default=True, nullable=False)
-    module = Column(String(50), nullable=False)
+    
+    module_id = Column(UUID(as_uuid=True), ForeignKey("control_modules.id"), nullable=False)
+
+    module = relationship("ControlModule", backref="categories")
+
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now(), nullable=False)
 
     __table_args__ = (
-        # nome único dentro do módulo
-        # evita duas categorias chamadas "Tesouro" no mesmo módulo
-        # mas permite "Tesouro" no bonds e no private_credit por exemplo
-        # UNIQUE(name, module)
-        UniqueConstraint("name", "module", name="uix_category_name_module"),
+        UniqueConstraint("name", "module_id", name="uix_category_name_module_id"),
         {"sqlite_autoincrement": True},
     )
-
