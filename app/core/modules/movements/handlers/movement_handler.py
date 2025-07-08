@@ -2,7 +2,7 @@ from decimal import Decimal
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.core.modules.control.handlers.portfolio_date_handler import sync_portfolio_dates
-from app.core.modules.movements.services.process_positions_service import process_positions_generic_service
+from app.core.modules.movements.services.process_positions_service import process_positions_service
 from app.core.modules.private_credit.assets.services.update_asset_position_service import update_asset_position
 from app.models.movements import Movement, MovementStatus
 from app.models.positions import Position
@@ -34,7 +34,7 @@ def create_movement(db: Session, movement_in: MovementCreate) -> Movement:
 
     sync_portfolio_dates(db, movement_in.module_id)
     update_asset_position(db, movement_in.asset_id)
-    process_positions_generic_service(
+    process_positions_service(
         db=db,
         module_id=movement_in.module_id,
         position_model=Position
@@ -55,7 +55,8 @@ def update_movement(db: Session, movement_id: UUID, movement_in: MovementUpdate)
 
     for field, value in movement_in.model_dump(exclude_unset=True).items():
         setattr(movement, field, value)
-
+        movement.status = MovementStatus.PENDING
+        
     # recalcula amount se quantidade ou preço mudarem
     if movement_in.quantity or movement_in.unit_price:
         q = Decimal(str(movement_in.quantity)) if movement_in.quantity else movement.quantity
@@ -69,7 +70,7 @@ def update_movement(db: Session, movement_id: UUID, movement_in: MovementUpdate)
 
     sync_portfolio_dates(db, movement.module_id)
     update_asset_position(db, asset_id)
-    process_positions_generic_service(
+    process_positions_service(
         db=db,
         module_id=movement.module_id,
         position_model=Position
@@ -81,16 +82,32 @@ def update_movement(db: Session, movement_id: UUID, movement_in: MovementUpdate)
 def delete_movement(db: Session, movement_id: UUID):
     movement = get_movement(db, movement_id)
     module_id = movement.module_id
+    asset_id = movement.asset_id
+
+    # remove o movimento
     db.delete(movement)
     db.commit()
 
-    asset_id = movement.asset_id
-    # sincroniza depois de remover
+    # após deletar, marca como PENDING apenas os movimentos do mesmo asset
+    db.query(Movement).filter(
+        Movement.asset_id == asset_id,
+        Movement.status == MovementStatus.CONFIRMED
+    ).update({"status": MovementStatus.PENDING})
+    db.commit()
+
+    # sincroniza datas do portfólio
     sync_portfolio_dates(db, module_id)
+
+    # atualiza o custo médio do asset
     update_asset_position(db, asset_id)
-    process_positions_generic_service(
+
+    # processa posições apenas para movimentos pendentes
+    process_positions_service(
         db=db,
         module_id=module_id,
         position_model=Position
     )
+
+    return {"message": f"Movimento {movement_id} excluído e posições reprocessadas para o asset {asset_id}."}
+
 

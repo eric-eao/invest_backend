@@ -3,36 +3,39 @@ from sqlalchemy import asc
 from decimal import Decimal
 from app.models.movements import Movement, MovementType, MovementStatus
 
-def process_positions_generic_service(
+def process_positions_service(
     db: Session,
     module_id: str,
     position_model,
 ) -> dict:
 
     try:
-        # 1️⃣ apaga posições anteriores do módulo
-        db.query(position_model).filter(
-            position_model.module_id == module_id
-        ).delete()
-        db.commit()
-
-        # 2️⃣ busca movimentos confirmados do módulo
-        movements = (
+        # 1️⃣ busca movimentos PENDING
+        pending_movements = (
             db.query(Movement)
             .filter(
                 Movement.module_id == module_id,
-                Movement.status == MovementStatus.CONFIRMED,
+                Movement.status == MovementStatus.PENDING,
             )
             .order_by(asc(Movement.movement_date), asc(Movement.created_at))
             .all()
         )
 
-        if not movements:
-            return {"message": "Nenhum movimento confirmado para processar."}
+        if not pending_movements:
+            return {"message": "Nenhum movimento pendente para processar."}
 
-        for mv in movements:
+        # 2️⃣ remove apenas posições relacionadas a esses movimentos
+        affected_asset_ids = list({mv.asset_id for mv in pending_movements})
+
+        db.query(position_model).filter(
+            position_model.module_id == module_id,
+            position_model.asset_id.in_(affected_asset_ids),
+        ).delete()
+        db.commit()
+
+        # 3️⃣ reconstrói apenas os movimentos pendentes
+        for mv in pending_movements:
             if mv.movement_type == MovementType.DEPOSIT:
-                # cria novo lote
                 new_lot = position_model(
                     asset_id=mv.asset_id,
                     module_id=mv.module_id,
@@ -80,9 +83,13 @@ def process_positions_generic_service(
                         lot.quantity_current = Decimal(0)
                         lot.lot_end_date = mv.movement_date
 
+            # marca movimento como confirmado
+            mv.status = MovementStatus.CONFIRMED
+
         db.commit()
-        return {"message": f"Posições recalculadas com sucesso para módulo {module_id}"}
+
+        return {"message": f"Movimentos pendentes processados e confirmados para módulo {module_id}"}
 
     except Exception as e:
         db.rollback()
-        raise Exception(f"Erro ao processar posições genéricas: {str(e)}")
+        raise Exception(f"Erro ao processar posições: {str(e)}")

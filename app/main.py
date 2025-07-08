@@ -7,6 +7,7 @@ from app.routes.admin.benchmarks import router as admin_benchmarks_router
 from app.routes.snapshot.benchmarks import router as snapshot_benchmarks_router
 from app.routes.movements import router as movements_router
 from app.routes.export import router as export_router
+from app.routes.private_credit.sync import router as private_credit_sync_router
 
 app = FastAPI(
     title="Invest Control",
@@ -16,6 +17,7 @@ app = FastAPI(
 
 app.include_router(categories_router, prefix="/private-credit/categories")
 app.include_router(assets_router, prefix="/private-credit/assets")
+app.include_router(private_credit_sync_router, prefix="/private-credit/sync")
 app.include_router(admin_benchmarks_router, prefix="/admin/benchmarks")
 app.include_router(modules_router, prefix="/admin/modules")
 app.include_router(movements_router, prefix="/movements")

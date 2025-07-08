@@ -1,3 +1,4 @@
+from decimal import Decimal
 from sqlalchemy.orm import Session
 from uuid import UUID
 from fastapi import HTTPException
@@ -5,17 +6,38 @@ from sqlalchemy.exc import IntegrityError
 from app.core.modules.movements.services import create_initial_movement_asset_service
 from app.core.modules.private_credit.assets.validators.asset_validator import asset_validator
 from app.models.private_credit.private_credit_asset import PrivateCreditAsset
-from app.schemas.private_credit_asset import PrivateCreditAssetCreate, PrivateCreditAssetUpdate
+from app.schemas.private_credit_asset import PrivateCreditAssetCreate, PrivateCreditAssetOut, PrivateCreditAssetUpdate
 
 def list_assets(db: Session):
-    return db.query(PrivateCreditAsset).all()
+    assets = db.query(PrivateCreditAsset).all()
+    result = []
+
+    for item in assets:
+        data = PrivateCreditAssetOut.from_orm(item).dict()
+
+        if item.current_unit_price and item.total_quantity:
+            data["current_amount"] = (Decimal(item.current_unit_price) * Decimal(item.total_quantity)).quantize(Decimal("0.01"))
+        else:
+            data["current_amount"] = None
+
+        result.append(data)
+
+    return result
 
 
 def get_asset(db: Session, asset_id: UUID):
     item = db.query(PrivateCreditAsset).filter(PrivateCreditAsset.id == asset_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Ativo não encontrado")
-    return item
+
+    data = PrivateCreditAssetOut.from_orm(item).dict()
+
+    if item.current_unit_price and item.total_quantity:
+        data["current_amount"] = (Decimal(item.current_unit_price) * Decimal(item.total_quantity)).quantize(Decimal("0.01"))
+    else:
+        data["current_amount"] = None
+
+    return data
 
 
 def create_asset(db: Session, asset_in: PrivateCreditAssetCreate):

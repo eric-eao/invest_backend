@@ -1,3 +1,4 @@
+from decimal import Decimal
 from pydantic import BaseModel
 from uuid import UUID
 from typing import Optional
@@ -37,6 +38,17 @@ class PrivateCreditAssetOut(PrivateCreditAssetBase):
     id: UUID
     created_at: datetime
     updated_at: datetime
+
+    total_quantity: Optional[Decimal] = None
+    average_unit_price: Optional[Decimal] = None
+    total_cost: Optional[Decimal] = None
+    current_unit_price: Optional[Decimal] = None
+    current_amount: Optional[Decimal] = None
+    last_valuation_date: Optional[date] = None
+    profitability_percent: Optional[Decimal] = None
+    profitability_amount: Optional[Decimal] = None
+    profitability_percent_annualized: Optional[Decimal] = None  # 🆕
+    cdi_ref: Optional[Decimal] = None  # 🆕
 
     class Config:
         from_attributes = True

@@ -10,12 +10,16 @@
 │       ├── 2ab8511a7185_create_movements_table.py
 │       ├── 45252f22e3fa_create_control_benchmarks_table.py
 │       ├── 4b6e3b2a7842_create_control_benchmarks_table.py
+│       ├── 4bd37468fc22_create_private_credit_positions.py
+│       ├── 55bcff81ebc7_add_summary_calc_status_to_snapshot_.py
 │       ├── 5651f72b2c30_create_private_credit_assets_table.py
 │       ├── 624e07476f97_change_module_to_module_id_with_fk.py
+│       ├── 6e8f180339b0_rename_private_credit_positions_to_.py
 │       ├── 7159431ae56f_rename_categories_to_private_credit_.py
 │       ├── 771d17d6965d_add_fields_to_private_credit_assets_for_.py
 │       ├── 7bf9db417aa6_create_snapshot_benchmarks_table.py
 │       ├── 80e47424908f_create_control_benchmarks_table.py
+│       ├── 8687d71ffa10_add_rate_period_to_control_benchmark.py
 │       ├── 8a0d08c0fe2a_add_module_id_to_category_with_foreign_.py
 │       ├── 8ad0af392e0a_initial_clean_revision.py
 │       ├── __pycache__
@@ -23,12 +27,16 @@
 │       │   ├── 2ab8511a7185_create_movements_table.cpython-310.pyc
 │       │   ├── 45252f22e3fa_create_control_benchmarks_table.cpython-310.pyc
 │       │   ├── 4b6e3b2a7842_create_control_benchmarks_table.cpython-310.pyc
+│       │   ├── 4bd37468fc22_create_private_credit_positions.cpython-310.pyc
+│       │   ├── 55bcff81ebc7_add_summary_calc_status_to_snapshot_.cpython-310.pyc
 │       │   ├── 5651f72b2c30_create_private_credit_assets_table.cpython-310.pyc
 │       │   ├── 624e07476f97_change_module_to_module_id_with_fk.cpython-310.pyc
+│       │   ├── 6e8f180339b0_rename_private_credit_positions_to_.cpython-310.pyc
 │       │   ├── 7159431ae56f_rename_categories_to_private_credit_.cpython-310.pyc
 │       │   ├── 771d17d6965d_add_fields_to_private_credit_assets_for_.cpython-310.pyc
 │       │   ├── 7bf9db417aa6_create_snapshot_benchmarks_table.cpython-310.pyc
 │       │   ├── 80e47424908f_create_control_benchmarks_table.cpython-310.pyc
+│       │   ├── 8687d71ffa10_add_rate_period_to_control_benchmark.cpython-310.pyc
 │       │   ├── 8a0d08c0fe2a_add_module_id_to_category_with_foreign_.cpython-310.pyc
 │       │   ├── 8ad0af392e0a_initial_clean_revision.cpython-310.pyc
 │       │   ├── c288c3ec2137_change_movement_type_enum_to_english.cpython-310.pyc
@@ -90,8 +98,10 @@
 │   │       │   │   └── movement_handler.py
 │   │       │   └── services
 │   │       │       ├── __pycache__
-│   │       │       │   └── create_initial_movement_asset_service.cpython-310.pyc
-│   │       │       └── create_initial_movement_asset_service.py
+│   │       │       │   ├── create_initial_movement_asset_service.cpython-310.pyc
+│   │       │       │   └── process_positions_service.cpython-310.pyc
+│   │       │       ├── create_initial_movement_asset_service.py
+│   │       │       └── process_positions_service.py
 │   │       ├── private_credit
 │   │       │   ├── assets
 │   │       │   │   ├── handlers
@@ -121,6 +131,24 @@
 │   │       │           │   └── category_handler.cpython-310.pyc
 │   │       │           └── category_handler.py
 │   │       └── snapshot
+│   │           ├── handlers
+│   │           │   ├── __pycache__
+│   │           │   │   ├── snapshot_benchmark_handler.cpython-310.pyc
+│   │           │   │   ├── snapshot_reset_calc_status_handler.cpython-310.pyc
+│   │           │   │   ├── snapshot_reset_handler.cpython-310.pyc
+│   │           │   │   ├── snapshot_reset_summary_handler.cpython-310.pyc
+│   │           │   │   └── snapshot_sync_handler.cpython-310.pyc
+│   │           │   ├── snapshot_reset_handler.py
+│   │           │   └── snapshot_sync_handler.py
+│   │           └── services
+│   │               ├── __pycache__
+│   │               │   ├── snapshot_calculate_accumulated_service.cpython-310.pyc
+│   │               │   ├── snapshot_calculate_service.cpython-310.pyc
+│   │               │   ├── snapshot_reset_calc_status_service.cpython-310.pyc
+│   │               │   ├── snapshot_reset_service.cpython-310.pyc
+│   │               │   └── snapshot_sync_service.cpython-310.pyc
+│   │               ├── snapshot_reset_service.py
+│   │               └── snapshot_sync_service.py
 │   ├── database.py
 │   ├── main.py
 │   ├── models
@@ -134,6 +162,7 @@
 │   │   │   ├── enums.cpython-310.pyc
 │   │   │   ├── movement.cpython-310.pyc
 │   │   │   ├── movements.cpython-310.pyc
+│   │   │   ├── positions.cpython-310.pyc
 │   │   │   ├── private_credit_asset.cpython-310.pyc
 │   │   │   └── private_credit_category.cpython-310.pyc
 │   │   ├── control
@@ -146,6 +175,7 @@
 │   │   │   └── control_portfolio_date.py
 │   │   ├── enums.py
 │   │   ├── movements.py
+│   │   ├── positions.py
 │   │   ├── private_credit
 │   │   │   ├── __pycache__
 │   │   │   │   ├── private_credit_asset.cpython-310.pyc
@@ -153,12 +183,15 @@
 │   │   │   ├── private_credit_asset.py
 │   │   │   └── private_credit_category.py
 │   │   └── snapshot
+│   │       ├── __pycache__
+│   │       │   └── snapshot_benchmark.cpython-310.pyc
 │   │       └── snapshot_benchmark.py
 │   ├── routes
 │   │   ├── __init__.py
 │   │   ├── __pycache__
 │   │   │   ├── __init__.cpython-310.pyc
 │   │   │   ├── categories.cpython-310.pyc
+│   │   │   ├── export.cpython-310.pyc
 │   │   │   └── movements.cpython-310.pyc
 │   │   ├── admin
 │   │   │   ├── __pycache__
@@ -167,6 +200,7 @@
 │   │   │   │   └── portfolio_dates.cpython-310.pyc
 │   │   │   ├── benchmarks.py
 │   │   │   └── modules.py
+│   │   ├── export.py
 │   │   ├── movements.py
 │   │   ├── private_credit
 │   │   │   ├── __pycache__
@@ -175,7 +209,10 @@
 │   │   │   ├── assets.py
 │   │   │   └── categories.py
 │   │   └── snapshot
-│   │       └── snapshot_benchmarks.py
+│   │       ├── __pycache__
+│   │       │   ├── benchmarks.cpython-310.pyc
+│   │       │   └── snapshot_benchmarks.cpython-310.pyc
+│   │       └── benchmarks.py
 │   ├── schemas
 │   │   ├── __init__.py
 │   │   ├── __pycache__
@@ -192,9 +229,14 @@
 │   │   ├── control_module.py
 │   │   ├── control_portfolio_date.py
 │   │   ├── movement.py
+│   │   ├── position.py
 │   │   ├── private_credit_asset.py
 │   │   ├── private_credit_category.py
 │   │   └── snapshot_benchmark.py
+│   ├── services
+│   │   ├── __pycache__
+│   │   │   └── export_table_excel.cpython-310.pyc
+│   │   └── export_table_excel.py
 │   ├── tests
 │   │   ├── __init__.py
 │   │   ├── __pycache__
@@ -227,8 +269,10 @@
 ├── docker-compose.yml
 ├── docs
 │   ├── bechmark.md
+│   ├── calulo_retabilidade_private_credit.md
 │   ├── comands.md
 │   ├── development_tracker.md
+│   ├── fluxo_positions.md
 │   ├── path_structure.md
 │   └── technical.md
 └── requirements.txt
