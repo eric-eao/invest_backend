@@ -75,7 +75,7 @@ def calculate_private_credit_service(db: Session) -> dict:
             profitability_percent = ((pu - initial_price) / initial_price) * 100 if initial_price > 0 else Decimal(0)
             profitability_amount = (pu - initial_price) * lot.quantity_current
 
-            # 📊 CDI acumulado no mesmo período
+            # 📊 CDI acumulado no mesmo período (referência sem ajuste de percentual)
             cdi_rates = (
                 db.query(SnapshotBenchmark.rate_daily)
                 .filter(
@@ -137,12 +137,15 @@ def calculate_pu_from_cdi(
     )
 
     factor = Decimal("1")
-    index_factor = (Decimal(index_percent or 100)) / Decimal("100")
-
     for (rate,) in daily_rates:
-        factor *= (1 + (rate / Decimal("100")) * index_factor)
+        rate_decimal = rate / Decimal("100")
+        factor *= (1 + rate_decimal)
 
-    return unit_price_initial * factor
+    # ✅ Aplica o percentual de CDI ao fator final
+    index_multiplier = (Decimal(index_percent or 100)) / Decimal("100")
+    adjusted_factor = factor ** index_multiplier
+
+    return unit_price_initial * adjusted_factor
 
 
 def calculate_pu_from_ipca(

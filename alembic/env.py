@@ -17,7 +17,19 @@ if config.config_file_name is not None:
 # add your model's MetaData object here
 # for 'autogenerate' support
 from app.database import Base
-from app.models import Category, ControlBenchmark, Movement, ControlModule
+from app.models import (
+    Category,
+    ControlBenchmark,
+    ControlModule,
+    Movement,
+    Position
+)
+from app.models.private_credit import (
+    private_credit_asset,
+    private_credit_category,
+)
+from app.models.snapshot import snapshot_benchmark
+from app.models.control import control_portfolio_date
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 

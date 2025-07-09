@@ -3,9 +3,10 @@ from sqlalchemy import Column, String, Float, Boolean, Enum, DateTime, UniqueCon
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.database import Base
-from app.models.enums import CurrencyEnum
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+
+from app.schemas.enums import CurrencyEnum
 
 class Category(Base):
     __tablename__ = "private_credit_categories"

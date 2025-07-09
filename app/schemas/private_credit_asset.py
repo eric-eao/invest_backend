@@ -11,12 +11,13 @@ class PrivateCreditAssetBase(BaseModel):
     institution: str
     category_id: UUID
     maturity_date: Optional[date]
-    rate_type: Optional[str]           # <-- corrigido para Optional
+    rate_type: Optional[str]
     indexer: Optional[str]
     fixed_rate: Optional[float]
     spread: Optional[float]
     index_percent: Optional[float]
     active: bool = True
+    module_id: UUID
 
 class PrivateCreditAssetCreate(PrivateCreditAssetBase):
     initial_movement: Optional[PrivateCreditInitialMovementCreate] = None

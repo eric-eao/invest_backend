@@ -18,6 +18,7 @@ class PrivateCreditAsset(Base):
     fixed_rate = Column(Float, nullable=True)
     spread = Column(Float, nullable=True)
     index_percent = Column(Float, nullable=True)
+    module_id = Column(UUID(as_uuid=True), ForeignKey("control_modules.id"), nullable=False)
 
     # CAMPOS DE RESUMO DE MOVIMENTOS
     total_quantity = Column(Numeric(20, 6), nullable=True)

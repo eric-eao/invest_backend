@@ -2,7 +2,8 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 from typing import Optional
 from uuid import UUID
-from app.models.enums import CurrencyEnum
+
+from app.schemas.enums import CurrencyEnum
 
 
 class CategoryBase(BaseModel):

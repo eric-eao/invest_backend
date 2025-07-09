@@ -4,10 +4,8 @@ from pydantic import BaseModel, Field
 from uuid import UUID
 from enum import Enum
 
-class RatePeriod(str, Enum):
-    daily = "daily"
-    monthly = "monthly"
-    annual = "annual"
+from app.schemas.enums import RatePeriod
+
 
 class ControlBenchmarkBase(BaseModel):
     name: str = Field(..., max_length=100)

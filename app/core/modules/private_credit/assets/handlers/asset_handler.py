@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from app.core.modules.movements.services import create_initial_movement_asset_service
 from app.core.modules.private_credit.assets.validators.asset_validator import asset_validator
 from app.models.private_credit.private_credit_asset import PrivateCreditAsset
+from app.schemas.movement import PrivateCreditInitialMovementCreate
 from app.schemas.private_credit_asset import PrivateCreditAssetCreate, PrivateCreditAssetOut, PrivateCreditAssetUpdate
 
 def list_assets(db: Session):
@@ -13,14 +14,14 @@ def list_assets(db: Session):
     result = []
 
     for item in assets:
-        data = PrivateCreditAssetOut.from_orm(item).dict()
+        obj = PrivateCreditAssetOut.from_orm(item)
 
         if item.current_unit_price and item.total_quantity:
-            data["current_amount"] = (Decimal(item.current_unit_price) * Decimal(item.total_quantity)).quantize(Decimal("0.01"))
+            obj.current_amount = (Decimal(item.current_unit_price) * Decimal(item.total_quantity)).quantize(Decimal("0.01"))
         else:
-            data["current_amount"] = None
+            obj.current_amount = None
 
-        result.append(data)
+        result.append(obj)
 
     return result
 
@@ -68,6 +69,7 @@ def create_asset(db: Session, asset_in: PrivateCreditAssetCreate):
             spread=asset_in.spread,
             index_percent=asset_in.index_percent,
             active=asset_in.active,
+            module_id=asset_in.module_id,
         )
         db.add(db_asset)
         db.commit()
@@ -77,17 +79,29 @@ def create_asset(db: Session, asset_in: PrivateCreditAssetCreate):
         raise HTTPException(status_code=400, detail="Erro de integridade ao criar ativo")
 
     # movimento inicial
-    if asset_in.initial_movement:
-        result = create_initial_movement_asset_service.create_initial_movement_asset(
-            db=db,
-            movement_in=asset_in.initial_movement,
-            asset_id=db_asset.id
-        )
-        db_asset.average_unit_price = result["average_unit_price"]
-        db_asset.total_quantity = result["total_quantity"]
-        db_asset.total_cost = result["total_cost"]
-        db.commit()
-        db.refresh(db_asset)
+    movement = asset_in.initial_movement
+    if movement and movement.quantity and movement.unit_price:
+        # se não veio module_id no movimento, preenche com o do asset
+        movement_data = movement.model_dump()
+        if not movement_data.get("module_id"):
+            movement_data["module_id"] = asset_in.module_id
+
+        movement_obj = PrivateCreditInitialMovementCreate(**movement_data)
+
+        try:
+            result = create_initial_movement_asset_service.create_initial_movement_asset(
+                db=db,
+                movement_in=movement_obj,
+                asset_id=db_asset.id
+            )
+            db_asset.average_unit_price = result["average_unit_price"]
+            db_asset.total_quantity = result["total_quantity"]
+            db_asset.total_cost = result["total_cost"]
+            db.commit()
+            db.refresh(db_asset)
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(status_code=400, detail=f"Erro ao criar movimento inicial: {str(e)}")
 
     return db_asset
 
